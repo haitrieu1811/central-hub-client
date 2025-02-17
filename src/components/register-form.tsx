@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import usersApis from '@/apis/users.apis'
@@ -53,14 +54,14 @@ export default function RegisterForm() {
 
   return (
     <Form {...form}>
-      <form className='space-y-8' onSubmit={handleSubmit}>
+      <form className='space-y-6' onSubmit={handleSubmit}>
         {/* Email */}
         <FormField
           control={form.control}
           name='email'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel className='block'>Email</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -78,7 +79,7 @@ export default function RegisterForm() {
           name='password'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mật khẩu</FormLabel>
+              <FormLabel className='block'>Mật khẩu</FormLabel>
               <FormControl>
                 <Input type='password' {...field} />
               </FormControl>
@@ -92,7 +93,7 @@ export default function RegisterForm() {
           name='confirmPassword'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nhập lại mật khẩu</FormLabel>
+              <FormLabel className='block'>Nhập lại mật khẩu</FormLabel>
               <FormControl>
                 <Input type='password' {...field} />
               </FormControl>
@@ -104,6 +105,12 @@ export default function RegisterForm() {
           {registerMutation.isPending && <Loader2 size={16} className='animate-spin mr-2' />}
           Đăng ký
         </Button>
+        <div className='flex items-center justify-center'>
+          <p className='text-sm text-muted-foreground'>Bạn đã có tài khoản?</p>
+          <Button asChild variant='link' className='px-1'>
+            <Link to={'/'}>Đăng nhập</Link>
+          </Button>
+        </div>
       </form>
     </Form>
   )
