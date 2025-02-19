@@ -1,6 +1,6 @@
-import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 
+import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
 import AuthLayout from '@/layouts/auth-layout'
 import MainLayout from '@/layouts/main-layout'
@@ -10,7 +10,7 @@ import RegisterPage from '@/pages/register'
 
 function App() {
   return (
-    <React.Fragment>
+    <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
       <Routes>
         <Route
           path='/'
@@ -38,7 +38,7 @@ function App() {
         />
       </Routes>
       <Toaster richColors />
-    </React.Fragment>
+    </ThemeProvider>
   )
 }
 
