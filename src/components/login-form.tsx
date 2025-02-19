@@ -7,38 +7,35 @@ import { toast } from 'sonner'
 
 import usersApis from '@/apis/users.apis'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { UserRole } from '@/constants/enum'
 import PATH from '@/constants/path'
 import { isUnprocessableEntityAxiosError } from '@/lib/utils'
-import { RegisterSchema, registerSchema } from '@/rules/users.rules'
+import { loginSchema, LoginSchema } from '@/rules/users.rules'
 import { SuccessRes } from '@/types/utils.types'
 
-export default function RegisterForm() {
-  const form = useForm<RegisterSchema>({
-    resolver: zodResolver(registerSchema),
+export default function LoginForm() {
+  const form = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
-      password: '',
-      confirmPassword: ''
+      password: ''
     }
   })
 
-  const registerMutation = useMutation({
-    mutationKey: ['register'],
-    mutationFn: usersApis.register,
+  const loginMutation = useMutation({
+    mutationKey: ['login'],
+    mutationFn: usersApis.login,
     onSuccess: (data) => {
       toast.success(data.data.message)
-      form.reset()
     },
-    onError(error) {
-      if (isUnprocessableEntityAxiosError<SuccessRes<RegisterSchema>>(error)) {
+    onError: (error) => {
+      if (isUnprocessableEntityAxiosError<SuccessRes<LoginSchema>>(error)) {
         const errors = error.response?.data.data
         if (!errors) return
         Object.keys(errors).forEach((key) => {
-          form.setError(key as keyof RegisterSchema, {
-            message: errors[key as keyof RegisterSchema],
+          form.setError(key as keyof LoginSchema, {
+            message: errors[key as keyof LoginSchema],
             type: 'Server'
           })
         })
@@ -47,10 +44,7 @@ export default function RegisterForm() {
   })
 
   const handleSubmit = form.handleSubmit((data) => {
-    registerMutation.mutate({
-      ...data,
-      role: UserRole.Customer
-    })
+    loginMutation.mutate(data)
   })
 
   return (
@@ -66,10 +60,6 @@ export default function RegisterForm() {
               <FormControl>
                 <Input {...field} />
               </FormControl>
-              <FormDescription>
-                Sau khi đăng ký thành công sẽ có thư gửi về email quý khách vừa nhập để xác minh email. Vui lòng xác
-                minh email để sử dụng.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -88,28 +78,14 @@ export default function RegisterForm() {
             </FormItem>
           )}
         />
-        {/* Nhập lại mật khẩu */}
-        <FormField
-          control={form.control}
-          name='confirmPassword'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className='block'>Nhập lại mật khẩu</FormLabel>
-              <FormControl>
-                <Input type='password' {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <Button type='submit' className='w-full'>
-          {registerMutation.isPending && <Loader2 size={16} className='animate-spin mr-2' />}
-          Đăng ký
+          {loginMutation.isPending && <Loader2 size={16} className='animate-spin mr-2' />}
+          Đăng nhập
         </Button>
         <div className='flex items-center justify-center'>
-          <p className='text-sm text-muted-foreground'>Bạn đã có tài khoản?</p>
+          <p className='text-sm text-muted-foreground'>Bạn chưa có tài khoản?</p>
           <Button asChild variant='link' className='px-1'>
-            <Link to={PATH.LOGIN}>Đăng nhập</Link>
+            <Link to={PATH.REGISTER}>Đăng ký</Link>
           </Button>
         </div>
       </form>

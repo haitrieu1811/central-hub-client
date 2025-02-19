@@ -8,6 +8,11 @@ export type RegisterReqBody = {
   role: UserRole
 }
 
+export type LoginReqBody = {
+  email: string
+  password: string
+}
+
 export type RegisterSuccessRes = SuccessRes<
   AuthRes & {
     user: {
@@ -19,3 +24,5 @@ export type RegisterSuccessRes = SuccessRes<
     }
   }
 >
+
+export type LoginSuccessRes = RegisterSuccessRes

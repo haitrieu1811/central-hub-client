@@ -20,4 +20,10 @@ export const registerSchema = userSchema
     path: ['confirmPassword']
   })
 
+export const loginSchema = userSchema.pick({
+  email: true,
+  password: true
+})
+
 export type RegisterSchema = z.infer<typeof registerSchema>
+export type LoginSchema = z.infer<typeof loginSchema>
