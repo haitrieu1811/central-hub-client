@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from 'axios'
 
-import { LOGIN_API_ENDPOINT, REGISTER_API_ENDPOINT } from '@/apis/users.apis'
+import { LOGIN_API_ENDPOINT, LOGOUT_API_ENDPOINT, REGISTER_API_ENDPOINT } from '@/apis/users.apis'
 import {
+  clearAuthFromLS,
   getAccessTokenFromLS,
   getProfileFromLS,
   getRefreshTokenFromLS,
@@ -60,6 +61,11 @@ class Http {
           setAccessTokenToLS(accessToken)
           setRefreshTokenToLS(refreshToken)
           setProfileToLS(profile)
+        } else if (url && url === LOGOUT_API_ENDPOINT) {
+          this.accessToken = ''
+          this.refreshToken = ''
+          this.profile = null
+          clearAuthFromLS()
         }
         return response
       },

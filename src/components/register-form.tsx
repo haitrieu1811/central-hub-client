@@ -2,8 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
+import React from 'react'
 
 import usersApis from '@/apis/users.apis'
 import { Button } from '@/components/ui/button'
@@ -14,8 +15,13 @@ import PATH from '@/constants/path'
 import { isUnprocessableEntityAxiosError } from '@/lib/utils'
 import { RegisterSchema, registerSchema } from '@/rules/users.rules'
 import { SuccessRes } from '@/types/utils.types'
+import { AppContext } from '@/contexts/app.context'
 
 export default function RegisterForm() {
+  const navigate = useNavigate()
+
+  const { setIsAuthenticated, setProfile } = React.useContext(AppContext)
+
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -31,6 +37,9 @@ export default function RegisterForm() {
     onSuccess: (data) => {
       toast.success(data.data.message)
       form.reset()
+      navigate(PATH.HOME)
+      setIsAuthenticated(true)
+      setProfile(data.data.data.user)
     },
     onError(error) {
       if (isUnprocessableEntityAxiosError<SuccessRes<RegisterSchema>>(error)) {

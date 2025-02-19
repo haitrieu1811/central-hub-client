@@ -3,6 +3,10 @@ export type SuccessRes<Data> = {
   data: Data
 }
 
+export type OnlyMessageRes = {
+  message: string
+}
+
 export type BaseUser = {
   _id: string
   email: string
